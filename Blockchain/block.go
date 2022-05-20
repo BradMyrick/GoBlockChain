@@ -40,3 +40,7 @@ func Genesis() *Block {
 func InitBlockChain() *BlockChain {
 	return &BlockChain{[]*Block{Genesis()}}
 }
+
+func (chain *BlockChain) getBlockchainSize() int {
+	return len(chain.Blocks)
+}
