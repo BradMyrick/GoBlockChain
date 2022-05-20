@@ -41,6 +41,6 @@ func InitBlockChain() *BlockChain {
 	return &BlockChain{[]*Block{Genesis()}}
 }
 
-func (chain *BlockChain) getBlockchainSize() int {
+func (chain *BlockChain) GetBlockchainSize() int {
 	return len(chain.Blocks)
 }
