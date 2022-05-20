@@ -13,9 +13,11 @@ func main() {
 	chain.AddBlock("Second Block after Genesis")
 	chain.AddBlock("Third Block after Genesis")
 
-	for _, block := range chain.GetBlockchainSize() {
+	for _, block := range chain.Blocks {
 		fmt.Printf("Previous Hash: %x\n", block.PrevHash)
 		fmt.Printf("Data in Block: %s\n", block.Data)
 		fmt.Printf("Hash: %x\n", block.Hash)
 	}
+
+	fmt.Printf("Blockchain Size: %d\n", chain.GetBlockchainSize())
 }
