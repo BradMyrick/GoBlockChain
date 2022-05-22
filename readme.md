@@ -1,9 +1,11 @@
-Author: Brad Myrick 
+Dev: Brad Myrick 
+Source Material: https://github.com/tensor-programming/
 follow me on twitter @terran_nft
 Go Lang Blockchain with cli, wallets, and transactions.
 Use the guide found at https://www.youtube.com/watch?v=mYlHT9bB6OE
-then use the Badger DB updates I've included in the code to get it running correctly.
+then use the Badger DB and various updates I've included in the code to get it running correctly.
 the guide is 4 years old and has not been updated.
+Check back for chain updates. 
 
 Setup:
     in terminal:  go build .
