@@ -8,9 +8,9 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/tensor-programming/golang-blockchain/blockchain"
-	"github.com/tensor-programming/golang-blockchain/network"
-	"github.com/tensor-programming/golang-blockchain/wallet"
+	"github.com/BradMyrick/GoBlockChain/network"
+	"github.com/BradMyrick/GoBlockChain/wallet"
+	"github.com/BradMyrick/GoBlockChainb/blockchain"
 )
 
 type CommandLine struct{}
