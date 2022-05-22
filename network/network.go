@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"syscall"
 
-	"gopkg.in/vrecan/death.v3"
+	"gopkg.com/vrecan/death.v3"
 
 	"github.com/BradMyrick/GoBlockChain/blockchain"
 )
