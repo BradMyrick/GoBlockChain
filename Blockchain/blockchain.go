@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/dgraph-io/badger"
+	"github.com/dgraph-io/badger/v3"
 )
 
 const (
@@ -42,7 +42,7 @@ func ContinueBlockChain(nodeId string) *BlockChain {
 
 	var lastHash []byte
 
-	opts := badger.DefaultOptions
+	opts := badger.DefaultOptions("").WithInMemory(true)
 	opts.Dir = path
 	opts.ValueDir = path
 
