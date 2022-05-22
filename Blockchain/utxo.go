@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"log"
 
-	"github.com/dgraph-io/badger"
+	"github.com/dgraph-io/badger/v3"
 )
 
 var (

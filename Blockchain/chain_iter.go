@@ -1,6 +1,6 @@
 package blockchain
 
-import "github.com/dgraph-io/badger"
+import "github.com/dgraph-io/badger/v3"
 
 type BlockChainIterator struct {
 	CurrentHash []byte
