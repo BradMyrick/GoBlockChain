@@ -19,7 +19,11 @@ func (iter *BlockChainIterator) Next() *Block {
 	err := iter.Database.View(func(txn *badger.Txn) error {
 		item, err := txn.Get(iter.CurrentHash)
 		Handle(err)
-		encodedBlock, err := item.Value()
+		var encodedBlock []byte
+		err = item.Value(func(val []byte) error {
+			encodedBlock = val
+			return nil
+		})
 		block = Deserialize(encodedBlock)
 
 		return err

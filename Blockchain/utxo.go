@@ -31,7 +31,11 @@ func (u UTXOSet) FindSpendableOutputs(pubKeyHash []byte, amount int) (int, map[s
 		for it.Seek(utxoPrefix); it.ValidForPrefix(utxoPrefix); it.Next() {
 			item := it.Item()
 			k := item.Key()
-			v, err := item.Value()
+			var v []byte
+			err := item.Value(func(val []byte) error {
+				v = val
+				return nil
+			})
 			Handle(err)
 			k = bytes.TrimPrefix(k, utxoPrefix)
 			txID := hex.EncodeToString(k)
@@ -64,7 +68,11 @@ func (u UTXOSet) FindUnspentTransactions(pubKeyHash []byte) []TxOutput {
 
 		for it.Seek(utxoPrefix); it.ValidForPrefix(utxoPrefix); it.Next() {
 			item := it.Item()
-			v, err := item.Value()
+			var v []byte
+			err := item.Value(func(val []byte) error {
+				v = val
+				return nil
+			})
 			Handle(err)
 			outs := DeserializeOutputs(v)
 			for _, out := range outs.Outputs {
@@ -135,7 +143,11 @@ func (u *UTXOSet) Update(block *Block) {
 					inID := append(utxoPrefix, in.ID...)
 					item, err := txn.Get(inID)
 					Handle(err)
-					v, err := item.Value()
+					var v []byte
+					err = item.Value(func(val []byte) error {
+						v = val
+						return nil
+					})
 					Handle(err)
 
 					outs := DeserializeOutputs(v)
