@@ -52,8 +52,10 @@ func ContinueBlockChain(nodeId string) *BlockChain {
 	err = db.Update(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte("lh"))
 		Handle(err)
-		lastHash, err = item.Value()
-
+		err = item.Value(func(val []byte) error {
+			lastHash = val
+			return nil
+		})
 		return err
 	})
 	Handle(err)
@@ -70,7 +72,7 @@ func InitBlockChain(address, nodeId string) *BlockChain {
 		runtime.Goexit()
 	}
 	var lastHash []byte
-	opts := badger.DefaultOptions
+	opts := badger.DefaultOptions("").WithInMemory(true)
 	opts.Dir = path
 	opts.ValueDir = path
 
@@ -109,11 +111,19 @@ func (chain *BlockChain) AddBlock(block *Block) {
 
 		item, err := txn.Get([]byte("lh"))
 		Handle(err)
-		lastHash, _ := item.Value()
+		var lastHash []byte
+		_ = item.Value(func(val []byte) error {
+			lastHash = val
+			return nil
+		})
 
 		item, err = txn.Get(lastHash)
 		Handle(err)
-		lastBlockData, _ := item.Value()
+		var lastBlockData []byte
+		_ = item.Value(func(val []byte) error {
+			lastBlockData = val
+			return nil
+		})
 
 		lastBlock := Deserialize(lastBlockData)
 
@@ -130,15 +140,23 @@ func (chain *BlockChain) AddBlock(block *Block) {
 
 func (chain *BlockChain) GetBestHeight() int {
 	var lastBlock Block
+	var lastHash []byte
 
 	err := chain.Database.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte("lh"))
 		Handle(err)
-		lastHash, _ := item.Value()
+		_ = item.Value(func(val []byte) error {
+			lastHash = val
+			return nil
+		})
 
 		item, err = txn.Get(lastHash)
 		Handle(err)
-		lastBlockData, _ := item.Value()
+		var lastBlockData []byte
+		_ = item.Value(func(val []byte) error {
+			lastBlockData = val
+			return nil
+		})
 
 		lastBlock = *Deserialize(lastBlockData)
 
@@ -151,12 +169,16 @@ func (chain *BlockChain) GetBestHeight() int {
 
 func (chain *BlockChain) GetBlock(blockHash []byte) (Block, error) {
 	var block Block
+	var blockData []byte
 
 	err := chain.Database.View(func(txn *badger.Txn) error {
 		if item, err := txn.Get(blockHash); err != nil {
 			return errors.New("Block is not found")
 		} else {
-			blockData, _ := item.Value()
+			_ = item.Value(func(val []byte) error {
+				blockData = val
+				return nil
+			})
 
 			block = *Deserialize(blockData)
 		}
@@ -200,11 +222,18 @@ func (chain *BlockChain) MineBlock(transactions []*Transaction) *Block {
 	err := chain.Database.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte("lh"))
 		Handle(err)
-		lastHash, err = item.Value()
+		err = item.Value(func(val []byte) error {
+			lastHash = val
+			return nil
+		})
 
 		item, err = txn.Get(lastHash)
+		var lastBlockData []byte
 		Handle(err)
-		lastBlockData, _ := item.Value()
+		_ = item.Value(func(val []byte) error {
+			lastBlockData = val
+			return nil
+		})
 
 		lastBlock := Deserialize(lastBlockData)
 
@@ -323,7 +352,6 @@ func retry(dir string, originalOpts badger.Options) (*badger.DB, error) {
 		return nil, fmt.Errorf(`removing "LOCK": %s`, err)
 	}
 	retryOpts := originalOpts
-	retryOpts.Truncate = true
 	db, err := badger.Open(retryOpts)
 	return db, err
 }
